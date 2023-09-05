@@ -1,0 +1,9 @@
+*.json
+*.iml
+*.xml
+*.csv
+.idea/*
+models/*
+documents/*
+oauth_key/*
+*.pyc
