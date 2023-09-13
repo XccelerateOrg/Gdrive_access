@@ -1,5 +1,6 @@
 from sentence_transformers import SentenceTransformer, util
 import pandas as pd
+import numpy as np
 from tqdm import tqdm
 
 
@@ -32,4 +33,5 @@ def get_attendance(student_list: pd.DataFrame, attendance_list: list, dates_list
                     # pass
     new_list = pd.DataFrame.from_records(student_list_dicts)
     new_list = new_list.drop(columns=['FullName', 'NameVector'])
-    return new_list
+    sorted_date_list = [dt.strftime('%d-%m-%Y') for dt in np.asarray(dates_list)[sort_order]]
+    return new_list.reindex(['First Name', 'Last name'] + sorted_date_list, axis=1)

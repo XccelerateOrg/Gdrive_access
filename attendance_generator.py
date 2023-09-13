@@ -13,8 +13,8 @@ def convert_excel_bytes_to_dataframe(file_object, sheet_name):
 
 
 if __name__ == "__main__":
-    cohort = 22
-    cohort_name = "FTDS Jul 2023 Cohort"
+    cohort = 21
+    cohort_name = "FTDS Apr 2023 Cohort"
     print("Searching files!")
     attendance_files = get_file_by_name(authenticate(), name=f"{cohort_name} Attendance Report")
 
