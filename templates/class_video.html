@@ -2,9 +2,24 @@
 {% block content %}
     <div class="content-section">
         <form method="POST" action="">
+            {{ form.csrf_token }}
             {{ form.hidden_tag() }}
             <fieldset class = "form-group">
                 <legend class ="border-bottom mb-4">Class video transition</legend>
+                <div class="form-group">
+                    {{ form.tag.label(class="form-control-label") }}
+
+                    {% if form.tag.errors %}
+                        {{ form.tag(class="form-control is invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.tag.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.tag(class="form-control") }}
+                    {% endif %}
+                </div>
                 <div class="form-group">
                     {{ form.origin.label(class="form-control-label") }}
 
@@ -64,5 +79,18 @@
                 {{ form.submit(class="btn btn-outline-info") }}
             </div>
         </form>
+        <div class="video-content">
+            <legend class ="border-bottom mb-4">Videos in Database</legend>
+            {% for video in videos %}
+                <div class="video">
+                    <p>ID: {{ video.id }}</p>
+                    <p>Tag: {{ video.tag }}</p>
+                    <p>Origin: {{ video.origin }}</p>
+                    <p>Video: {{ video.video }}</p>
+                    <p>Destination: {{ video.destin }}</p>
+                    <p>User: {{ video.user }}</p>
+                </div>
+            {% endfor%}
+        </div>
     </div>
 {% endblock content %}

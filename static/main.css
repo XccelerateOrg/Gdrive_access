@@ -70,3 +70,25 @@ main.container {
     float: none;
   }
 }
+
+.video-content {
+  margin: 5px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.video {
+  margin: 5px;
+  flex: 20%;
+  padding: 10px;
+  margin: 5px;
+  inline-size: 100%;
+}
+
+.form-group {
+  .invalid-feedback {
+    display: block;
+  }
+}
