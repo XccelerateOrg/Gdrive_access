@@ -12,10 +12,10 @@ def get_files(service, name=None):
     if not name:
         while True:
             results = service.files().list(spaces='drive',
-                                           supportsAllDrives = True,
-                                            fields="nextPageToken, files(id, name, mimeType, size, parents, modifiedTime)", 
-                                            includeItemsFromAllDrives = True,
-                                            pageToken=next_page_token).execute()
+                                           supportsAllDrives=True,
+                                           fields="nextPageToken, files(id, name, mimeType, size, parents, modifiedTime)",
+                                           includeItemsFromAllDrives=True,
+                                           pageToken=next_page_token).execute()
             files_list.extend(results.get('files', []))
             next_page_token = results.get('nextPageToken', None)
             if next_page_token is None:
@@ -25,8 +25,8 @@ def get_files(service, name=None):
             results = service.files().list(
                 q=f"name contains '{name}'",
                 spaces='drive',
-                supportsAllDrives = True,
-                includeItemsFromAllDrives = True,
+                supportsAllDrives=True,
+                includeItemsFromAllDrives=True,
                 fields="nextPageToken, files(id, name, mimeType, size, parents, modifiedTime)", 
                 pageToken=next_page_token
             ).execute()
@@ -35,6 +35,7 @@ def get_files(service, name=None):
             if next_page_token is None:
                 break
     return files_list
+
 
 def get_all_files(service):
     all_files = get_files(service=service)
@@ -67,6 +68,7 @@ def list_files(items=None):
             table = tabulate(rows, headers=["ID", "Name", "Parent", "Type", "Modified Time"])
             print(table)
 
+
 def download_bytesio(service, file_obj, destination=None):
     request = service.files().export_media(fileId=file_obj['id'], mimeType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     file = io.BytesIO()
@@ -78,4 +80,5 @@ def download_bytesio(service, file_obj, destination=None):
         with open(destination, "wb") as f:
             f.write(file.getvalue())
     return file
+
 

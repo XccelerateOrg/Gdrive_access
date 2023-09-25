@@ -1,5 +1,5 @@
 import re
-from datetime import date, datetime
+from datetime import datetime
 from utilities.authenticate import authenticate
 from utilities.file_management import get_file_by_name, download_bytesio
 import pandas as pd
