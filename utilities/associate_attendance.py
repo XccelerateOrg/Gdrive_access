@@ -31,7 +31,7 @@ def get_attendance(student_list: pd.DataFrame, attendance_list: list, dates_list
                 score = util.cos_sim(student['NameVector'],
                                      attendance.loc[attendant, ['NameVector']].values[0]).numpy()[0, 0]
                 # print(f"{student['FullName']} x {attendance.loc[attendant, 'FullName']} = {score}")
-                if score > 0.86:
+                if score > 0.85:
                     student[attendance_date.strftime('%d-%m-%Y')] = attendance.loc[attendant, 'Duration']
                     # cur_score = score
                     # pass
