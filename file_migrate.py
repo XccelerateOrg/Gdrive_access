@@ -40,7 +40,7 @@ def get_id(url):
 def move_file_to_folder(service, file_id, folder_id):
     try:
         service = service
-
+        print("Moving " + file_id + " to " + folder_id)
         file = service.files().get(fileId=file_id, fields='parents').execute()
         previous_parents = ",".join(file.get('parents'))
         # Move the file to the new folder
@@ -52,11 +52,11 @@ def move_file_to_folder(service, file_id, folder_id):
     except HttpError as error:
         print(F'An error occurred: {error}')
         return None
-'''
-    if request.method == 'POST':
+
+    '''if request.method == 'POST':
     origin = get_id(request.form["folder"])
     video = request.form["video"]
-    destin = get_id(request.form["designate"])l
+    destin = get_id(request.form["designate"])
     vid_lst = get_videos(authenticate(), origin, video)
     print(origin+video+destin+vid_lst)
 

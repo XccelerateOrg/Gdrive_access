@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from form import VideoForm, AttendanceForm
 from attendance_generator import attendance_generate
+from file_migrate import move_file_to_folder, get_id, get_videos
+from utilities.authenticate import authenticate
 
 # imports from form.py
 from flask_wtf import FlaskForm
@@ -104,7 +106,20 @@ def classvideos():
         video = VideoPath(tag=form.tag.data, origin=form.origin.data, video=form.video.data, destin=form.destin.data, user=form.user.data)
         db.session.add(video)
         db.session.commit()
-        print("form video added to db")
+        print("Form video added to db")
+        print("Moving files")
+        origin = get_id(form.origin.data)
+        video = video=form.video.data
+        destin = get_id(form.destin.data)
+        vid_lst = get_videos(authenticate(), origin, video)
+        print("Transfer Info: " + origin+video+destin)
+        print(vid_lst)
+
+        for items in vid_lst:
+            print("Transfering" + items)
+            move_file_to_folder(service=authenticate(),
+                                file_id=items['id'],
+                                folder_id=destin)
     
     videos = VideoPath.query.all()
     return render_template("class_video.html", form=form, videos=videos)
