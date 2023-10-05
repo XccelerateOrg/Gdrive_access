@@ -18,13 +18,14 @@ from sqlalchemy.orm import Mapped, mapped_column
 class Base(DeclarativeBase):
     pass
 
+# declare SQLite DB and App
 db = SQLAlchemy(model_class=Base)
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '962da5a46aa2aadd65d7bcaba821997ace8679jjj'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 db.init_app(app)
 
-# including model here to avoid circular import
+# including model to avoid circular import
 class VideoPath(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     tag: Mapped[str] = mapped_column(String, unique=True, nullable=False)
@@ -40,7 +41,6 @@ class VideoPath(db.Model):
 with app.app_context():
     db.create_all()
     
-
 # declerations from form.py
 def validate_tag(self, tag):
     tag = VideoPath.query.filter_by(tag = tag.data).first()
@@ -59,7 +59,6 @@ class VideoForm(FlaskForm):
     destin = StringField('Designated File link', validators=[DataRequired(message = "Data Required for Destination File Link"), URL(message="URL must be valid")])
     user = StringField('Admin', validators=[DataRequired(message = "Data Required for User")])
     submit = SubmitField('ADD')
-
 
 
 @app.route("/")
@@ -102,24 +101,35 @@ def attendance():
 def classvideos():
     form = VideoForm()
 
-    if request.method == 'POST' and form.validate_on_submit():
+    # if deleting entry
+    if request.method == 'POST' and 'delete_entry_button' in request.form:
+        print("Deleting Entry: " + request.form["path_id"])
+        to_delete = VideoPath.query.filter_by(tag=request.form["path_id"]).first()
+        db.session.delete(to_delete)
+        db.session.commit()
+    # if adding entry
+    elif request.method == 'POST' and form.validate_on_submit():
         video = VideoPath(tag=form.tag.data, origin=form.origin.data, video=form.video.data, destin=form.destin.data, user=form.user.data)
         db.session.add(video)
         db.session.commit()
         print("Form video added to db")
-        print("Moving files")
+        
+        #inital transfer for new entry
+        print("Transfering files...")
         origin = get_id(form.origin.data)
-        video = video=form.video.data
+        video = form.video.data
         destin = get_id(form.destin.data)
         vid_lst = get_videos(authenticate(), origin, video)
-        print("Transfer Info: " + origin+video+destin)
-        print(vid_lst)
+        print("Transfering Pathname: " + video)
+        print("Origin Folder ID: " + origin )
+        print("Destination Folder ID: " + destin)
+        print("Transfered Videos: ")
 
         for items in vid_lst:
-            print("Transfering" + items)
-            move_file_to_folder(service=authenticate(),
-                                file_id=items['id'],
-                                folder_id=destin)
+            print("Transfering: " + items["name"])
+            #move_file_to_folder(service=authenticate(),
+                                #file_id=items['id'],
+                                #folder_id=destin)
     
     videos = VideoPath.query.all()
     return render_template("class_video.html", form=form, videos=videos)

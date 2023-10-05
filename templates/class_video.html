@@ -91,6 +91,7 @@
                     <th> Video Title </th>
                     <th> Destination </th>
                     <th> User </th>
+                    <th> Actions </th>
                 </tr>
             </thead>
             {% for video in videos %}
@@ -101,6 +102,13 @@
                     <td>{{ video.video }}</td>
                     <td>{{ video.destin }}</td>
                     <td>{{ video.user }}</td>
+                    <td>
+                        <form name"delete_entry" method="post">
+                            <input type="hidden" name="path_id" value="{{video.tag}}" >
+                            <input type="submit" class="btn btn-danger" name="delete_entry_button" value="Delete">
+                        </form>
+                    </td>
+                    
                 </tr>
             {% endfor%}
         </table>

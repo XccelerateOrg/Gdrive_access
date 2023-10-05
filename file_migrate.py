@@ -40,7 +40,7 @@ def get_id(url):
 def move_file_to_folder(service, file_id, folder_id):
     try:
         service = service
-        print("Moving " + file_id + " to " + folder_id)
+        print("\tMoving " + file_id + " to " + folder_id)
         file = service.files().get(fileId=file_id, fields='parents').execute()
         previous_parents = ",".join(file.get('parents'))
         # Move the file to the new folder
