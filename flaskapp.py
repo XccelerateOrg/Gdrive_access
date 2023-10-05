@@ -127,9 +127,9 @@ def classvideos():
 
         for items in vid_lst:
             print("Transfering: " + items["name"])
-            #move_file_to_folder(service=authenticate(),
-                                #file_id=items['id'],
-                                #folder_id=destin)
+            move_file_to_folder(service=authenticate(),
+                                file_id=items['id'],
+                                folder_id=destin)
     
     videos = VideoPath.query.all()
     return render_template("class_video.html", form=form, videos=videos)
