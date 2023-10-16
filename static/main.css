@@ -70,3 +70,9 @@ main.container {
     float: none;
   }
 }
+
+.form-group {
+  .invalid-feedback {
+    display: block;
+  }
+}

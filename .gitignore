@@ -8,3 +8,4 @@ documents/*
 oauth_key/*
 *.pyc
 flaskapp.py
+virtual_env/
