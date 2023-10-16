@@ -1,0 +1,32 @@
+{% extends "home.html" %}
+{% block content %}
+
+<div class="content">
+  <h2>Student Attendance for {{course_template}}</h2><br>
+    {% for table in tables %}
+                {{ table|safe }}
+    {% endfor %}
+
+  <br>
+
+  <table class="legend">
+    <tr>
+      <th>Status</th>
+      <th>Colour</th>
+    </tr>
+    <tr>
+      <td>Present for over 40 minutes</td>
+      <td id="green">Green</td>
+    </tr>
+    <tr>
+      <td>Present for 30-40 minutes</td>
+      <td id="yellow">Yellow</td>
+    </tr>
+    <tr>
+      <td>Present for less than 30 minutes or Absent</td>
+      <td id="red">Red</td>
+    </tr>
+  </table>
+</div>
+
+{% endblock content %}

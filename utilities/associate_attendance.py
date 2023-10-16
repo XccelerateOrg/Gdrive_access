@@ -2,9 +2,15 @@ from sentence_transformers import SentenceTransformer, util
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
+from datetime import datetime
+format = '%I:%M %p'
 
 
 def get_attendance(student_list: pd.DataFrame, attendance_list: list, dates_list: list, sort_order: list = None):
+
+    if len(student_list) == 0 or len(attendance_list) == 0:
+        return student_list
+   
     # nlp = SentenceTransformer('paraphrase-albert-small-v2', cache_folder="./models")
     nlp = SentenceTransformer('thenlper/gte-base', cache_folder="./models")
     student_list["First Name"] = student_list["First Name"].astype(str)
@@ -20,7 +26,17 @@ def get_attendance(student_list: pd.DataFrame, attendance_list: list, dates_list
         attendance["First name"] = attendance["First name"].astype(str)
         attendance["Last name"] = attendance["Last name"].astype(str)
         attendance["FullName"] = attendance[["First name", "Last name"]].agg(" ".join, axis=1)
-        attendance = attendance[["FullName", "Duration"]].copy()
+        attendance["Time joined"] = attendance["Time joined"].astype(str)
+        attendance["Time exited"] = attendance["Time exited"].astype(str)
+        attendance["Time Duration"] = " "
+        for i in range(len(attendance)):
+            start = attendance["Time joined"][i]
+            end = attendance["Time exited"][i]
+            attendance["Time Duration"][i] = (datetime.strptime(end, format) -
+                                              datetime.strptime(start, format))
+            attendance["Time Duration"][i] = attendance["Time Duration"][i]/pd.Timedelta(1, 'm')
+        attendance["Time Duration"] = attendance["Time Duration"].astype(int)
+        attendance = attendance[["FullName", "Time Duration"]].copy()
         attendance["NameVector"] = attendance["FullName"].apply(nlp.encode)
 
         for student in student_list_dicts:

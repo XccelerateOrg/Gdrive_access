@@ -1,0 +1,55 @@
+{% extends "home.html" %}
+{% block content %}
+    <div class="content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class = "form-group">
+                <legend class ="border-bottom mb-4">Attendance Generator</legend>
+                <div class="form-group">
+                    {{ form.coursecode.label(class="form-control-label") }}
+
+                    {% if form.coursecode.errors %}
+                        {{ form.coursecode(class="form-control is invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.coursecode.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.coursecode(class="form-control") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.cohortno.label(class="form-control-label") }}
+
+                    {% if form.cohortno.errors %}
+                        {{ form.cohortno(class="form-control is invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.cohortno.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.cohortno(class="form-control") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.cohortname.label(class="form-control-label") }}
+                    {% if form.cohortname.errors%}
+                        {{ form.cohortname(class="form-control is invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.cohortname.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.cohortname(class="form-control") }}
+                    {% endif %}
+                </div>
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+    </div>
+{% endblock content %}
