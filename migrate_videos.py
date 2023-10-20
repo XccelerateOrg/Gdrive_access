@@ -2,7 +2,7 @@ import sqlite3
 from file_migrate import move_file_to_folder, get_id, get_videos
 from utilities.authenticate import authenticate
 
-conn= sqlite3.connect("./instance/site.db")
+conn = sqlite3.connect("./instance/site.db")
 
 cursor = conn.cursor()
 cursor.execute("""
@@ -20,17 +20,16 @@ for video in videos:
     tag = video[1]
 
     vid_lst = get_videos(authenticate(), origin, videoName)
-    
-    print('*'*15)
-    print("Transfering Pathname: " + videoName)
-    print("Origin Folder ID: " + origin )
+
+    print('*' * 15)
+    print("Transferring Pathname: " + videoName)
+    print("Origin Folder ID: " + origin)
     print("Destination Folder ID: " + destin)
     print("Tag: " + tag)
-    print("Transfered Videos: ")
+    print("Transferred Videos: ")
 
     for items in vid_lst:
         print("Video: " + items["name"])
         move_file_to_folder(service=authenticate(),
                             file_id=items['id'],
                             folder_id=destin)
-

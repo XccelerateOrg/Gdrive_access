@@ -9,3 +9,6 @@ oauth_key/*
 *.pyc
 flaskapp.py
 virtual_env/
+.firebaserc
+functions/
+instance/

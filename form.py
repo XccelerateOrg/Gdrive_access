@@ -3,9 +3,9 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired, URL, ValidationError
 
 class AttendanceForm(FlaskForm):
-    coursecode = StringField('Course:', validators=[DataRequired()])
-    cohortno = StringField('Cohort:', validators=[DataRequired()])
-    cohortname = StringField('Cohort Name:', validators=[DataRequired()])
+    coursecode = StringField('Course Sheet Name in Student List (Example: FTDS, FTUX)', validators=[DataRequired()])
+    cohortno = StringField('Cohort Number (in Student List):', validators=[DataRequired()])
+    cohortname = StringField('Course Meeting Name (Example: FTDS Apr 2023 Cohort)', validators=[DataRequired()])
     submit = SubmitField('Get Attendance')
 
 def validate_tag(self, tag):
