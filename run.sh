@@ -1,0 +1,1 @@
+docker run -p 5001:80 -v ./models:/gdrive/models -v ./oauth_key:/gdrive/oauth_key --rm gdrive_app

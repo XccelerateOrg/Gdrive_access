@@ -12,3 +12,4 @@ virtual_env/
 .firebaserc
 functions/
 instance/
+token.json

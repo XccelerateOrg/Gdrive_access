@@ -1,9 +1,9 @@
 import re
 from datetime import datetime
-from utilities.authenticate import authenticate
-from utilities.file_management import get_file_by_name, download_bytesio
+from gdrive_app.utilities.authenticate import authenticate
+from gdrive_app.utilities.file_management import get_file_by_name, download_bytesio
 import pandas as pd
-from utilities.associate_attendance import get_attendance
+from gdrive_app.utilities.associate_attendance import get_attendance
 from tqdm import tqdm
 
 
