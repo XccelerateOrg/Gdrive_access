@@ -1,10 +1,12 @@
 import re
 from datetime import datetime
+
+import pandas as pd
+from tqdm import tqdm
+
+from gdrive_app.utilities.associate_attendance import get_attendance
 from gdrive_app.utilities.authenticate import authenticate
 from gdrive_app.utilities.file_management import get_file_by_name, download_bytesio
-import pandas as pd
-from gdrive_app.utilities.associate_attendance import get_attendance
-from tqdm import tqdm
 
 
 def colourcode(color):
@@ -23,6 +25,7 @@ def attendance_generate(cohort_code: int, cohort_name, sheet_name):
     print(f"Found {len(attendance_files)} files. Downloading...")
     attendance_list = []
     dates_list = []
+    # attendance_list = download_files_parallel(authenticate(), attendance_files)
     for file in tqdm(attendance_files):
         attendance_list.append(convert_excel_bytes_to_dataframe(download_bytesio(authenticate(), file), "Attendees"))
         dates_list.append(datetime.strptime(re.search("\d{4}-\d+-\d+", file['name']).group(0), '%Y-%m-%d'))

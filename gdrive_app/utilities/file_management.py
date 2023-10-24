@@ -1,9 +1,10 @@
-from tabulate import tabulate
 import io
-import requests
-import re
+import concurrent
+from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
+
 from googleapiclient.http import MediaIoBaseDownload
+from tabulate import tabulate
 
 
 def get_files(service, name=None):
@@ -27,7 +28,7 @@ def get_files(service, name=None):
                 spaces='drive',
                 supportsAllDrives=True,
                 includeItemsFromAllDrives=True,
-                fields="nextPageToken, files(id, name, mimeType, size, parents, modifiedTime)", 
+                fields="nextPageToken, files(id, name, mimeType, size, parents, modifiedTime)",
                 pageToken=next_page_token
             ).execute()
             files_list.extend(results.get('files', []))
@@ -70,15 +71,17 @@ def list_files(items=None):
 
 
 def download_bytesio(service, file_obj, destination=None):
-    request = service.files().export_media(fileId=file_obj['id'], mimeType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    # print(f"Downloading {file_obj['name']}")
+    request = service.files().export_media(fileId=file_obj['id'],
+                                           mimeType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     file = io.BytesIO()
-    downloader = MediaIoBaseDownload(file, request)
+    downloader = MediaIoBaseDownload(file, request, chunksize=2048 * 2048)
     done = False
     while not done:
         status, done = downloader.next_chunk()
     if destination:
         with open(destination, "wb") as f:
             f.write(file.getvalue())
+    # print(f"Download finished {file_obj['name']}!")
     return file
-
 
