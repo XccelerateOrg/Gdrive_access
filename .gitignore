@@ -2,6 +2,7 @@
 *.iml
 *.xml
 *.csv
+.env
 .idea/*
 models/*
 documents/*

@@ -1,15 +1,18 @@
 import psycopg2
+import os
+from dotenv import load_dotenv
 from gdrive_app.file_migrate import move_file_to_folder, get_id, get_videos
 from gdrive_app.utilities.authenticate import authenticate
 
 
 if __name__ == '__main__':
+    _ = load_dotenv()
     conn = psycopg2.connect(
-        host="analytics.xccelerate.co",
-        port=5432,
-        database="postgres",
-        user='xccadmin',
-        password='G4WKIf82HWpN')
+        host=os.environ["DB_HOST"],
+        port=os.environ["DB_PORT"],
+        database=os.environ["DB_DATABASE"],
+        user=os.environ["DB_USERNAME"],
+        password=os.environ["DB_PASSWORD"])
 
     cursor = conn.cursor()
     cursor.execute("""
