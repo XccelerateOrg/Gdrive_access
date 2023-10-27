@@ -21,3 +21,5 @@ ADD ./gdrive_app ./gdrive_app
 RUN pip install -r requirements.txt
 
 COPY token.json ./
+
+CMD ["gunicorn", "--workers", "2", "--bind", "0.0.0.0:3001", "--timeout", "120", "gdrive_app:app"]
