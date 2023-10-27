@@ -23,7 +23,7 @@ def attendance():
         try:
             attendance = attendance_generate(cohort_code=cohort, cohort_name=cohort_name, sheet_name=sheet_name)
         except Exception as e:
-            print("Something is wrong.")
+            print("Something is wrong.", e)
             return render_template("attend.html", form=form)
         else:
             attendance.set_table_styles([
