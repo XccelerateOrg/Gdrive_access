@@ -3,10 +3,11 @@ from datetime import datetime
 
 import pandas as pd
 from tqdm import tqdm
+from time import perf_counter
 
 from gdrive_app.utilities.associate_attendance import get_attendance
 from gdrive_app.utilities.authenticate import authenticate
-from gdrive_app.utilities.file_management import get_file_by_name, download_bytesio
+from gdrive_app.utilities.file_management import get_file_by_name, download_bytesio, parallel_download_files
 
 
 def colourcode(color):
@@ -25,21 +26,31 @@ def attendance_generate(cohort_code: int, cohort_name, sheet_name):
     print(f"Found {len(attendance_files)} files. Downloading...")
     attendance_list = []
     dates_list = []
-    # attendance_list = download_files_parallel(authenticate(), attendance_files)
-    for file in tqdm(attendance_files):
-        attendance_list.append(convert_excel_bytes_to_dataframe(download_bytesio(authenticate(), file), "Attendees"))
-        dates_list.append(datetime.strptime(re.search("\d{4}-\d+-\d+", file['name']).group(0), '%Y-%m-%d'))
+    print('.' * len(attendance_files))
+    start_time = perf_counter()
+    files_names_list = parallel_download_files(authenticate(), attendance_files, threads=4)
+    print(f"Time taken: {perf_counter() - start_time}")
+    for fln in tqdm(files_names_list):
+        attendance_list.append(convert_excel_bytes_to_dataframe(fln[0], "Attendees"))
+        dates_list.append(datetime.strptime(re.search("\d{4}-\d+-\d+",
+                                                      fln[1]).group(0), '%Y-%m-%d'))
+    # for file in tqdm(attendance_files):
+    #     attendance_list.append(convert_excel_bytes_to_dataframe(download_bytesio(file,
+    #                                                                              authenticate())[0],
+    #                                                             "Attendees"))
+    #     dates_list.append(datetime.strptime(re.search("\d{4}-\d+-\d+",
+    #                                                   file['name']).group(0), '%Y-%m-%d'))
 
     sorted_indexes = sorted(list(range(len(dates_list))), key=lambda x: dates_list[x])
 
     student_list = convert_excel_bytes_to_dataframe(
         download_bytesio(
-            authenticate(),
             get_file_by_name(
                 authenticate(),
                 name="student list"
-            )[0]
-        ),
+            )[0],
+            authenticate()
+        )[0],
         sheet_name
     )
     print("Associating Attendances...")
@@ -82,10 +93,9 @@ def attendance_generate(cohort_code: int, cohort_name, sheet_name):
                 color = "red"
             df.at[ind, c] = color
         if count > 0:
-            df.at[ind, "% participation"] = count/int(len(dates))
+            df.at[ind, "% participation"] = count / int(len(dates))
     df["% participation"] = df["% participation"].map('{:.0%}'.format)
     s = (df.style.applymap(colourcode)
          .format(formatter=" ", subset=(df.select_dtypes(object).columns[0:-1]))
          .set_caption("from " + str(dates[0]) + " to " + str(dates[-1])))
     return s
-

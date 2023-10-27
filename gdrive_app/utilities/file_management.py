@@ -1,6 +1,10 @@
 import io
 import concurrent
 from concurrent.futures import ThreadPoolExecutor
+import multiprocessing
+from functools import partial
+from time import sleep
+
 from tqdm import tqdm
 
 from googleapiclient.http import MediaIoBaseDownload
@@ -70,12 +74,14 @@ def list_files(items=None):
             print(table)
 
 
-def download_bytesio(service, file_obj, destination=None):
+def download_bytesio(file_obj, service, destination=None):
     # print(f"Downloading {file_obj['name']}")
+    sleep(1)
+    print('.', end='')
     request = service.files().export_media(fileId=file_obj['id'],
                                            mimeType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     file = io.BytesIO()
-    downloader = MediaIoBaseDownload(file, request, chunksize=2048 * 2048)
+    downloader = MediaIoBaseDownload(file, request, chunksize=1024 * 1024)
     done = False
     while not done:
         status, done = downloader.next_chunk()
@@ -83,5 +89,21 @@ def download_bytesio(service, file_obj, destination=None):
         with open(destination, "wb") as f:
             f.write(file.getvalue())
     # print(f"Download finished {file_obj['name']}!")
-    return file
+    return file, file_obj['name']
 
+
+# def parallel_download_files(service, file_objs, threads=2):
+#     executor = ThreadPoolExecutor(max_workers=threads)
+#     file_download_fn = partial(download_bytesio, service=service)
+#     with executor:
+#         results = executor.map(file_download_fn, file_objs)
+#     return list(results)
+
+
+def parallel_download_files(service, file_objs, threads=2):
+    pool = multiprocessing.Pool(processes=threads)
+    file_download_fn = partial(download_bytesio, service=service)
+    results = pool.map(file_download_fn, file_objs)
+    pool.close()
+    pool.join()
+    return list(results)
