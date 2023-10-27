@@ -1,10 +1,15 @@
-import sqlite3
+import psycopg2
 from gdrive_app.file_migrate import move_file_to_folder, get_id, get_videos
 from gdrive_app.utilities.authenticate import authenticate
 
 
 if __name__ == '__main__':
-    conn = sqlite3.connect("./instance/site.db")
+    conn = psycopg2.connect(
+        host="analytics.xccelerate.co",
+        port=5432,
+        database="postgres",
+        user='xccadmin',
+        password='G4WKIf82HWpN')
 
     cursor = conn.cursor()
     cursor.execute("""
@@ -35,3 +40,5 @@ if __name__ == '__main__':
             move_file_to_folder(service=authenticate(),
                                 file_id=items['id'],
                                 folder_id=destin)
+    cursor.close()
+    conn.close()
