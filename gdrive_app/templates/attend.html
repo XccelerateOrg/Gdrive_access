@@ -1,7 +1,7 @@
 {% extends "home.html" %}
 {% block content %}
     <div class="content-section">
-        <form method="POST" action="">
+        <form method="POST" action="" id="attendance-form">
             {{ form.hidden_tag() }}
             <fieldset class = "form-group">
                 <legend class ="border-bottom mb-4">Attendance Generator</legend>
@@ -48,8 +48,12 @@
                 </div>
             </fieldset>
             <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info") }}
+                {{ form.submit(class="btn btn-outline-info", id="submit-btn") }}
             </div>
         </form>
+
+        <!-- Include the loading screen template -->
+        {% include 'loading.html' %}
+        <div id="results-container"></div>
     </div>
 {% endblock content %}
