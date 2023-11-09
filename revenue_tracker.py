@@ -122,6 +122,8 @@ track['Received'] = list(map(lambda x, y: x-y, track['Course Price'], track['Fee
 #track['Paid Installment'] = list(map(lambda x, y: x//y, track['Course Price'], track['Received']))
 #track['Paid Installment'] = track['Paid Installment'].astype(int)
 
+exp_cmonth = []
+rec_cmonth = []
 exp_todate = []
 tcond = lambda x: x.date() < cmonth.date()
 for s in track['Student Name']:
@@ -137,10 +139,14 @@ for s in track['Student Name']:
 track['Expected'] = exp_todate
 
 pmt_todate = px.bar(
-    track, x="Student Name", y="Received", color="Payment Status", title="Expected Payment vs Received Payment(to date)"
+    track, x="Student Name", y="Received",
+    color='Payment Status', #color_discrete_sequence=px.colors.qualitative.Set1,
+    color_discrete_map={'Overdue Payment': 'red', 'Still Paying': '#3366CC'},
+    title="Expected Payment vs Received Payment(to date)"
 )
 pmt_todate.add_trace(
-    go.Scatter(x=track['Student Name'], y=track['Expected'], name="Expected", mode="lines")
+    go.Scatter(x=track['Student Name'], y=track['Expected'], name="Expected",
+               mode="lines")
 )
 #fig = px.line(track, x='Student Name', y='Expected')
 #fig.add_bar(x=track['Student Name'], y=track['Received'], name='Received', color=track['Payment Status'])
@@ -168,7 +174,7 @@ app.layout = html.Div(children=[
 
     html.Div(children=[
         dcc.Graph(
-            id='fig3', figure=revenue_graph, style={'width': '40%', 'display': 'inline-block'}
+            id='fig3', figure=revenue_graph, style={'width': '50%', 'display': 'inline-block'}
         ),
         html.Div(children=[
             dcc.Dropdown(
@@ -178,7 +184,7 @@ app.layout = html.Div(children=[
                 style={'width': '50%'}
             ),
             dcc.Graph(id='hc_graph')
-        ], style={'width': '60%', 'display': 'inline-block'})])
+        ], style={'width': '50%', 'display': 'inline-block'})])
 ])
 
 

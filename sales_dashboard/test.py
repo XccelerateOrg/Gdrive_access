@@ -22,8 +22,9 @@ print(now)
 
 # Sample list
 my_list = [10, 20, 30, 40, 50]
-
+print(sum(my_list))
 # Define the condition
+"""
 condition = lambda x: x > 30
 
 # Find the first element that matches the condition and its location
@@ -41,7 +42,7 @@ count = sum(1 for element in my_list if condition(element))
 # Print the count
 print(count)
 
-"""
+
 # Get the current date
 current_date = datetime.now()
 
