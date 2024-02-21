@@ -5,6 +5,8 @@ from gdrive_app.utilities.authenticate import authenticate
 from gdrive_app.models import VideoPath
 from gdrive_app.forms import VideoForm, AttendanceForm
 from gdrive_app.file_migrate import get_id, get_videos, move_file_to_folder
+from datetime import datetime
+import pytz
 
 
 @app.route("/")
@@ -23,7 +25,7 @@ def attendance():
         try:
             attendance = attendance_generate(cohort_code=cohort, cohort_name=cohort_name, sheet_name=sheet_name)
         except Exception as e:
-            print("Something is wrong.", e)
+            print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}]Something is wrong.", e)
             return render_template("attend.html", form=form)
         else:
             attendance.set_table_styles([
@@ -50,7 +52,7 @@ def classvideos():
 
     # if deleting entry
     if request.method == 'POST' and 'delete_entry_button' in request.form:
-        print("Deleting Entry: " + request.form["path_id"])
+        print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}] Deleting Entry: " + request.form["path_id"])
         to_delete = VideoPath.query.filter_by(tag=request.form["path_id"]).first()
         db.session.delete(to_delete)
         db.session.commit()
@@ -60,21 +62,21 @@ def classvideos():
                           user=form.user.data)
         db.session.add(video)
         db.session.commit()
-        print("Form video added to db")
+        print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}] Form video added to db")
 
         # inital transfer for new entry
-        print("Transfering files...")
+        print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}] Transfering files...")
         origin = get_id(form.origin.data)
         video = form.video.data
         destin = get_id(form.destin.data)
         vid_lst = get_videos(authenticate(), origin, video)
-        print("Transfering Pathname: " + video)
-        print("Origin Folder ID: " + origin)
-        print("Destination Folder ID: " + destin)
-        print("Transfered Videos: ")
+        print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}] Transfering Pathname: " + video)
+        print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}] Origin Folder ID: " + origin)
+        print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}] Destination Folder ID: " + destin)
+        print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}] Transfered Videos: ")
 
         for items in vid_lst:
-            print("Transfering: " + items["name"])
+            print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}] Transfering: " + items["name"])
             move_file_to_folder(service=authenticate(),
                                 file_id=items['id'],
                                 folder_id=destin)

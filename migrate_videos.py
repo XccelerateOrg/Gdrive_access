@@ -3,6 +3,8 @@ import os
 from dotenv import load_dotenv
 from gdrive_app.file_migrate import move_file_to_folder, get_id, get_videos
 from gdrive_app.utilities.authenticate import authenticate
+from datetime import datetime
+import pytz
 
 
 if __name__ == '__main__':
@@ -21,7 +23,7 @@ if __name__ == '__main__':
                     """)
     videos = cursor.fetchall()
 
-    print("Total video paths are:  ", len(videos))
+    print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}]Total video paths are:  ", len(videos))
 
     for video in videos:
         origin = get_id(video[2])
@@ -32,14 +34,14 @@ if __name__ == '__main__':
         vid_lst = get_videos(authenticate(), origin, videoName)
 
         print('*' * 15)
-        print("Transferring Pathname: " + videoName)
-        print("Origin Folder ID: " + origin)
-        print("Destination Folder ID: " + destin)
-        print("Tag: " + tag)
-        print("Transferred Videos: ")
+        print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}]Transferring Pathname: " + videoName)
+        print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}]Origin Folder ID: " + origin)
+        print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}]Destination Folder ID: " + destin)
+        print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}]Tag: " + tag)
+        print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}]Transferred Videos: ")
 
         for items in vid_lst:
-            print("Video: " + items["name"])
+            print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}]Video: " + items["name"])
             move_file_to_folder(service=authenticate(),
                                 file_id=items['id'],
                                 folder_id=destin)
