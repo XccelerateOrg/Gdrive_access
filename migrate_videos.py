@@ -26,24 +26,34 @@ if __name__ == '__main__':
     print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}]Total video paths are:  ", len(videos))
 
     for video in videos:
-        origin = get_id(video[2])
-        destin = get_id(video[4])
-        videoName = video[3]
-        tag = video[1]
+        print("==" * 50)
+        print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}] Processing: {video[1]} ...")
 
-        vid_lst = get_videos(authenticate(), origin, videoName)
+        try:
+            origin = get_id(video[2])
+            destin = get_id(video[4])
+            videoName = video[3]
+            tag = video[1]
+        except Exception as e:
+            print(f"Wrong format entered! {e}. Skipping")
+            continue
 
-        print('*' * 15)
-        print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}]Transferring Pathname: " + videoName)
-        print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}]Origin Folder ID: " + origin)
-        print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}]Destination Folder ID: " + destin)
-        print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}]Tag: " + tag)
-        print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}]Transferred Videos: ")
+        try:
+            vid_lst = get_videos(authenticate(), origin, videoName)
 
-        for items in vid_lst:
-            print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}]Video: " + items["name"])
-            move_file_to_folder(service=authenticate(),
-                                file_id=items['id'],
-                                folder_id=destin)
+            print('*' * 50)
+            print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}]Transferring Pathname: " + videoName)
+            print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}]Origin Folder ID: " + origin)
+            print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}]Destination Folder ID: " + destin)
+            print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}]Tag: " + tag)
+            print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}]Transferred Videos: ")
+
+            for items in vid_lst:
+                print(f"[{datetime.now(pytz.utc).strftime('[%Y-%m-%d %H:%M:%S %z]')}]Video: " + items["name"])
+                move_file_to_folder(service=authenticate(),
+                                    file_id=items['id'],
+                                    folder_id=destin)
+        except Exception as e:
+            print(f"Encountered exception {e}, Skipping")
     cursor.close()
     conn.close()

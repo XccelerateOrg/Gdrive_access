@@ -35,9 +35,9 @@ def get_videos(service, folder_id, video):
         return None
 
 
-def get_id(url):
+def get_id(url: str) -> str:
     url = url.split("folders/", 1)[1]
-    return url
+    return url.replace("?usp=drive_link", "")
 
 
 def move_file_to_folder(service, file_id, folder_id):
